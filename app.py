@@ -1,7 +1,14 @@
-from flask import Flask, request, jsonify, render_template
+import os
 import joblib
+from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
 
 model = joblib.load("student_score_model.pkl")
 
@@ -13,15 +20,16 @@ def home():
 def predict():
     data = request.json
 
-    hours = data["hours"]
-    attendance = data["attendance"]
-    previous_score = data["previous_score"]
+    hours = float(data["hours"])
+    attendance = float(data["attendance"])
+    previous_score = float(data["previous_score"])
 
     prediction = model.predict([[hours, attendance, previous_score]])
 
     return jsonify({
-        "predicted_score": prediction[0]
+        "predicted_score": round(prediction[0], 2)
     })
 
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
