@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Score Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Student Final Score Predictor</h2>
+
+    <label>Hours Studied</label>
+    <input type="number" id="hours">
+
+    <label>Attendance (%)</label>
+    <input type="number" id="attendance">
+
+    <label>Previous Score</label>
+    <input type="number" id="previous_score">
+
+    <button onclick="predictScore()">Predict Score</button>
+
+    <h3 id="result"></h3>
+</div>
+
+<script>
+    function predictScore() {
+        let hours = document.getElementById("hours").value;
+        let attendance = document.getElementById("attendance").value;
+        let previous_score = document.getElementById("previous_score").value;
+
+        fetch("/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                hours: Number(hours),
+                attendance: Number(attendance),
+                previous_score: Number(previous_score)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("result").innerText =
+                "Predicted Final Score: " + data.predicted_score.toFixed(2);
+        });
+    }
+</script>
+
+</body>
+
+</html>
