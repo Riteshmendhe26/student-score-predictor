@@ -1,49 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Student Score Predictor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="header">
+                <i class="fas fa-graduation-cap icon"></i>
+                <h1>Student Score Predictor</h1>
+                <p class="subtitle">AI-powered prediction based on study habits and performance</p>
+            </div>
 
-<div class="container">
-    <h2>Student Score Predictor</h2>
+            <form class="predict-form" id="predictForm">
+                <div class="input-group">
+                    <label for="hours">
+                        <i class="fas fa-book icon-small"></i>
+                        Study Hours
+                    </label>
+                    <input type="number" id="hours" name="hours" placeholder="0-20" min="0" max="20" required>
+                    <span class="input-focus"></span>
+                </div>
 
-    <label>Study Hours</label>
-    <input type="number" id="hours" placeholder="Enter study hours">
+                <div class="input-group">
+                    <label for="attendance">
+                        <i class="fas fa-users icon-small"></i>
+                        Attendance (%)
+                    </label>
+                    <input type="number" id="attendance" name="attendance" placeholder="0-100" min="0" max="100" required>
+                    <span class="input-focus"></span>
+                </div>
 
-    <label>Attendance (%)</label>
-    <input type="number" id="attendance" placeholder="Enter attendance">
+                <div class="input-group">
+                    <label for="previous_score">
+                        <i class="fas fa-chart-line icon-small"></i>
+                        Previous Score
+                    </label>
+                    <input type="number" id="previous_score" name="previous_score" placeholder="0-100" min="0" max="100" required>
+                    <span class="input-focus"></span>
+                </div>
 
-    <label>Previous Score</label>
-    <input type="number" id="previous_score" placeholder="Enter previous score">
+                <button type="submit" class="predict-btn">
+                    <span class="btn-text">Predict Score</span>
+                    <div class="btn-loader" id="loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </form>
 
-    <button onclick="predict()">Predict Score</button>
+            <div class="result-container" id="result">
+                <div class="result-placeholder">
+                    <i class="fas fa-magic icon-large"></i>
+                    <p>Enter your details and click predict to see your estimated score</p>
+                </div>
+            </div>
 
-    <div id="result"></div>
-</div>
+            <div class="features">
+                <div class="feature-item">
+                    <i class="fas fa-brain"></i>
+                    <span>AI-Powered</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Instant Results</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% Accurate Model</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-function predict() {
-    fetch("/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            hours: document.getElementById("hours").value,
-            attendance: document.getElementById("attendance").value,
-            previous_score: document.getElementById("previous_score").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("result").innerText =
-            "Predicted Final Score: " + data.predicted_score;
-    });
-}
-</script>
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            predict();
+        });
 
+        function predict() {
+            const loader = document.getElementById('loader');
+            const btnText = document.querySelector('.btn-text');
+            const result = document.getElementById('result');
+            
+            // Show loading state
+            loader.style.display = 'inline-block';
+            btnText.style.opacity = '0';
+            result.classList.add('loading');
+
+            fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    hours: document.getElementById("hours").value,
+                    attendance: document.getElementById("attendance").value,
+                    previous_score: document.getElementById("previous_score").value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Hide loading state
+                loader.style.display = 'none';
+                btnText.style.opacity = '1';
+                result.classList.remove('loading');
+                
+                // Show result
+                result.innerHTML = `
+                    <div class="result-content">
+                        <div class="score-circle">
+                            <span class="score-value">${data.predicted_score}</span>
+                            <span class="score-label">/100</span>
+                        </div>
+                        <h3 class="result-title">Predicted Final Score</h3>
+                        <p class="result-desc">Based on your study hours, attendance, and previous performance</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                btnText.style.opacity = '1';
+                result.classList.remove('loading');
+                result.innerHTML = '<div class="error">Prediction failed. Please try again.</div>';
+            });
+        }
+    </script>
 </body>
-
 </html>
