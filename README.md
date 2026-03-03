@@ -18,10 +18,6 @@ It uses a trained **Machine Learning Regression Model** to generate fast and acc
 ### 🎯 Predicted Score Output  
 ![Predicted Result](./screenshots/predict_result.png)
 
-> Ensure your screenshots are stored here:  
-> `./screenshots/predict_form.png`  
-> `./screenshots/predict_result.png`
-
 ---
 
 ## 🚀 **Features**
@@ -96,3 +92,4 @@ streamlit run app.py
 
 If you found this helpful, please give the repository a ⭐ Star.
 It motivates further improvements and showcases your project professionally!
+
