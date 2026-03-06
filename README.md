@@ -88,8 +88,22 @@ For Streamlit:
 streamlit run app.py
 ```
 
-### **⭐ Support the Project**
+---
 
-If you found this helpful, please give the repository a ⭐ Star.
-It motivates further improvements and showcases your project professionally!
+## 👨‍💻 Author
+
+**Ritesh Mendhe**
+
+Blockchain Developer | Full Stack Developer | Web3 Enthusiast  
+
+LinkedIn  
+https://www.linkedin.com/in/ritesh-mendhe-209225294  
+
+GitHub  
+https://github.com/riteshmendhe2602  
+
+---
+
+⭐ If you like this project, give it a **star on GitHub**.
+
 
